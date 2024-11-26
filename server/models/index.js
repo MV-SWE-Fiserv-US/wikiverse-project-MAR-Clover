@@ -21,12 +21,33 @@ const Page = sequelize.define('page', {
   }
 })
 
-Page.beforeValidate((page) => {
+// Page.beforeValidate((page) => {
+//   /*
+//    * Generate slug
+//    */
+//   if (!page.slug) {
+//     page.slug = page.title.replace(/\s/g, '_').replace(/\W/g, '').toLowerCase()
+//   }
+// })
+Page.beforeValidate(async (page) => {
   /*
-   * Generate slug
+   * Generate slug and ensure it's unique
    */
   if (!page.slug) {
-    page.slug = page.title.replace(/\s/g, '_').replace(/\W/g, '').toLowerCase()
+    page.slug = page.title.replace(/\s/g, '_').replace(/\W/g, '').toLowerCase();
+  }
+
+  // Check if slug already exists in the database
+  const existingPage = await Page.findOne({ where: { slug: page.slug } });
+  if (existingPage) {
+    // If slug exists, append a number to make it unique
+    let counter = 1;
+    let newSlug = page.slug + '-' + counter;
+    while (await Page.findOne({ where: { slug: newSlug } })) {
+      counter++;
+      newSlug = page.slug + '-' + counter;
+    }
+    page.slug = newSlug;
   }
 })
 
