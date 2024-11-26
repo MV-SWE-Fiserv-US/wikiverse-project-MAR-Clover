@@ -86,6 +86,7 @@ export const App = () => {
       //since the delete method returns an updated list of pages we can set pages here to data
       setPages(data)
       console.log(data);
+      //setting current page to null should make the ternary display list of pages instead of single page view
       setCurrentPage(null)
       
     }catch(err){
@@ -122,7 +123,7 @@ export const App = () => {
             setTags={setTags}
             onSubmit={onSubmit}
             />
-             <button onClick={() => setDisplayForm(false)}>Hide Form</button>
+             <button onClick={() => setDisplayForm(false)}>Cancel </button>
           </>
         ) : (
           <>
@@ -131,7 +132,7 @@ export const App = () => {
               setCurrentPage={setCurrentPage}
               getDetails={getDetails}
             />
-            <button onClick={() => setDisplayForm(true)}>Display Form</button>
+            <button onClick={() => setDisplayForm(true)}>Add Page</button>
             {/* <button onClick={() => setAddDisplay(false)}>Add page</button> */}
           </>
         )}
