@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { PagesList } from './PagesList';
 import {Form} from './Form';
 
-// Import and prepend the API URL to any fetch calls
 import apiURL from '../api';
-import { Page } from './Page';
+
 
 export const App = () => {
   const [pages, setPages] = useState([]);
@@ -133,7 +132,7 @@ export const App = () => {
               getDetails={getDetails}
             />
             <button onClick={() => setDisplayForm(true)}>Add Page</button>
-            {/* <button onClick={() => setAddDisplay(false)}>Add page</button> */}
+           
           </>
         )}
       </>
@@ -142,8 +141,3 @@ export const App = () => {
   );
 };
 
-// Title
-// Author
-// Content
-// Tags
-// Date (createdAt)
