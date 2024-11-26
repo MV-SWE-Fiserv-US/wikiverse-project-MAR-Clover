@@ -17,36 +17,53 @@ router.get('/', async (req, res, next) => {
 // POST /wiki
 router.post('/', async (req, res, next) => {
   try {
+    // Step 1: Find or create the user based on name and email
     const [user, wasCreated] = await User.findOrCreate({
       where: {
         name: req.body.name,
         email: req.body.email
       }
-    })
+    });
 
-    const page = await Page.create(req.body)
+    // Step 2: Create the page with provided request data (title and content)
+    const page = await Page.create(req.body);
 
-    await page.setAuthor(user)
+    // Step 3: Associate the page with the user (author)
+    await page.setAuthor(user);
 
+    // Step 4: Handle tags if provided
+    let tagArray = [];
     if (req.body.tags) {
-      const tagArray = req.body.tags.split(' ')
-      const tags = []
+      if (typeof req.body.tags === 'string') {
+        // Split the string by spaces into an array
+        tagArray = req.body.tags.split(' ');
+      } else if (Array.isArray(req.body.tags)) {
+        // Use the array as-is
+        tagArray = req.body.tags;
+      }
+
+      const tags = [];
       for (const tagName of tagArray) {
+        // Find or create each tag
         const [tag, wasCreated] = await Tag.findOrCreate({
           where: {
             name: tagName
           }
-        })
-        tags.push(tag)
+        });
+        tags.push(tag);
       }
-      await page.addTags(tags)
+      // Associate the tags with the page
+      await page.addTags(tags);
     }
 
-    res.send(page)
+    // Step 5: Send the created page as the response
+    res.status(201).send(page);
   } catch (error) {
-    next(error)
+    next(error);  // Pass the error to the error handler middleware
   }
-})
+});
+
+
 
 // GET /wiki/search
 router.get('/search', async (req, res, next) => {
